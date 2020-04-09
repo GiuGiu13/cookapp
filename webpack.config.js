@@ -1,9 +1,10 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 module.exports = {
-    entry: ['babel-polyfill', './src/js/index.js'],
+    entry: ['babel-polyfill', './src/js/index.js', "./src/scss/style.scss"],
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename:'js/bundle.js'
@@ -17,10 +18,18 @@ module.exports = {
             template: './src/index.html'
         }),
 
-        new MiniCssExtractPlugin({
-            filename: "css/bundle.css"
-          })
+       // extract css into dedicated file
+       new MiniCssExtractPlugin({
+        filename: './css/bundle.css'
+      })
     ],
+    optimization: {
+        minimizer: [
+     
+          // enable the css minification plugin
+          new OptimizeCSSAssetsPlugin({})
+        ]
+      },
     module:{
         rules:[
             {
@@ -31,23 +40,8 @@ module.exports = {
                 }
             },
             {
-                // Apply rule for .sass, .scss or .css files
-                test: /\.(sa|sc|c)ss$/,
-          
-                // Set loaders to transform files.
-                // Loaders are applying from right to left(!)
-                // The first loader will be applied after others
-                use: [
-                    {
-                        // After all CSS loaders we use plugin to do his work.
-                        // It gets all transformed CSS and extracts it into separate
-                        // single bundled file
-                        loader: MiniCssExtractPlugin.loader
-                      }, 
-                      {
-                        loader: "css-loader",
-                      },
-                     ]
+                test: /\.(sass|scss)$/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
               },
         ]
     }
