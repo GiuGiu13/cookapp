@@ -4,7 +4,8 @@
   "description": "app to easy life for every day cooking",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack"
+    "dev": "webpack --mode development",
+    "build": "webpack --mode production"
   },
   "repository": {
     "type": "git",
